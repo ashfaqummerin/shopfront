@@ -1,28 +1,39 @@
 import { Link, useParams } from "react-router-dom"
 import { Row, Col, Image, ListGroup, Card, Button } from "react-bootstrap"
 import Rating from "../components/Rating"
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 import axios from "axios"
-
+import { PRODUCT_DETAIL_REQUEST, PRODUCT_DETAIL_SUCCESS, PRODUCT_DETAIL_FAIL } from "../redux/productSlice"
+import { useDispatch, useSelector } from "react-redux"
+import Loader from "../components/Loader"
+import Message from "../components/Message"
 const ProductScreen = () => {
-
-    const [product, setProduct] = useState({})
+    const dispatch = useDispatch()
+    const { loading, error, product } = useSelector(state => state.productList)
+    // const [product, setProduct] = useState({})
     const { id } = useParams()
-    const fetchProducts = async () => {
-        const res = await axios.get(`/api/products/${id}`)
-        setProduct(res.data)
-    }
 
     useEffect(() => {
+        const fetchProducts = async () => {
+            try {
+                dispatch(PRODUCT_DETAIL_REQUEST())
+                const { data } = await axios.get(`/api/products/${id}`)
+                dispatch(PRODUCT_DETAIL_SUCCESS(data))
+            } catch (error) {
+                dispatch(PRODUCT_DETAIL_FAIL(error))
+            }
+            // const res = await axios.get(`/api/products/${id}`)
+            // setProduct(res.data)
+        }
 
         fetchProducts()
 
-    }, [])
-    // const { id } = useParams()
+    }, [dispatch])
 
     return (
         <>
             <Link to="/" className="btn btn-light my-3">Go Back</Link>
+            {loading ? <Loader /> : error ? <Message>{error}</Message> :
             <Row>
                 <Col md={6}>
                     <Image src={product?.image} alt={product?.name} fluid></Image>
@@ -67,6 +78,7 @@ const ProductScreen = () => {
                     </Card>
                 </Col>
             </Row>
+            }
 
         </>
     )

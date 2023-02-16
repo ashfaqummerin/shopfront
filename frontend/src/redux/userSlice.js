@@ -20,10 +20,21 @@ export const userLoginSlice = createSlice({
             state.error = action.payload.response.data.message
         },
         USER_LOGOUT: (state) => {
-            state.user = {}
+            state.userInfo = null
+        },
+        USER_REGISTER_REQUEST: (state) => {
+            state.loading = true
+        },
+        USER_REGISTER_SUCCESS: (state, action) => {
+            state.loading = false
+            state.userInfo = action.payload
+        },
+        USER_REGISTER_FAIL: (state, action) => {
+            state.loading = false
+            state.error = action.payload.response.data.message
         }
     }
 })
 
 export default userLoginSlice.reducer
-export const { USER_LOGIN_REQUEST, USER_LOGIN_SUCESS, USER_LOGIN_FAIL, USER_LOGOUT } = userLoginSlice.actions
+export const { USER_LOGIN_REQUEST, USER_LOGIN_SUCESS, USER_LOGIN_FAIL, USER_LOGOUT, USER_REGISTER_REQUEST, USER_REGISTER_SUCCESS, USER_REGISTER_FAIL } = userLoginSlice.actions

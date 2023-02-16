@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Message from "../components/Message";
 import Loader from "../components/Loader";
 import FormContainer from "../components/FormContainer";
-import { USER_LOGIN_REQUEST, USER_LOGIN_SUCESS, USER_LOGIN_FAIL } from "../redux/userLoginSlice";
+import { USER_LOGIN_REQUEST, USER_LOGIN_SUCESS, USER_LOGIN_FAIL } from "../redux/userSlice";
 import axios from "axios";
 
 
@@ -15,6 +15,7 @@ const LoginScreen = () => {
     const [email, setEmail] = useState(" ")
     const [password, setPassword] = useState("")
     const redirect = window.location.search ? window.location.search.split("=")[1] : "/"
+    console.log(redirect)
 
     // User Login Action
 
@@ -34,6 +35,7 @@ const LoginScreen = () => {
             dispatch(USER_LOGIN_FAIL(error))
         }
     }
+
 
     // State from store
     const userLogin = useSelector(state => state.userLogin)
@@ -59,17 +61,15 @@ const LoginScreen = () => {
             <Form.Group controlId="email">
                 <Form.Label>Email Address</Form.Label>
                 <Form.Control type="email" placeholder="Enter email" value={email} onChange={e => setEmail(e.target.value)}>
-
                 </Form.Control>
             </Form.Group>
 
             <Form.Group controlId="password">
                 <Form.Label>Password</Form.Label>
                 <Form.Control type="password" placeholder="Enter password" value={password} onChange={e => setPassword(e.target.value)}>
-
                 </Form.Control>
             </Form.Group>
-            <Button type="submit" variant="primary">
+            <Button type="submit" variant="primary" className="my-4">
                 Sign In
             </Button>
         </Form>

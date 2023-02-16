@@ -1,8 +1,6 @@
-import axios from "axios";
-import { useEffect } from "react";
 import { Button, Card, Col, Form, Image, ListGroup, Row } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux"
-import { useParams, useLocation, Link, useNavigate, useHis } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Message from "../components/Message";
 import { CART_ADD_ITEM, CART_REMOVE_ITEM } from "../redux/cartSlice"
 

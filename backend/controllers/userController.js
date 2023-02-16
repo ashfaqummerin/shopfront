@@ -29,7 +29,7 @@ const authUser = asyncHandler(async (req, res) => {
 // @route POST /api/users
 // @Access Private
 
-const registerUser = async function (req, res) {
+const registerUser = asyncHandler(async function (req, res) {
 
     const { name, email, password } = req.body
 
@@ -56,7 +56,8 @@ const registerUser = async function (req, res) {
         res.status(400)
         throw new Error("Invalid user data")
     }
-}
+
+})
 
 // @desc Get user profile
 // @route GET /api/users/profile

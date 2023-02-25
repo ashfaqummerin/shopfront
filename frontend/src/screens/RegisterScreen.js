@@ -87,8 +87,8 @@ const RegisterScreen = () => {
 
         <Row>
             <Col>
-                Already have an account? <Link to="/login">Login</Link>
-                {/* Already have an account? <Link to={redirect ? `login?redirect=${redirect}` : "/login"}>Login</Link> */}
+                {/* Already have an account? <Link to="/login">Login</Link> */}
+                Already have an account? <Link to={redirect ? `login?redirect=${redirect}` : "/login"}>Login</Link>
             </Col>
         </Row>
     </FormContainer>);

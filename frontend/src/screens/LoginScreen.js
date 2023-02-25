@@ -15,7 +15,6 @@ const LoginScreen = () => {
     const [email, setEmail] = useState(" ")
     const [password, setPassword] = useState("")
     const redirect = window.location.search ? window.location.search.split("=")[1] : "/"
-    console.log(redirect)
 
     // User Login Action
 
@@ -50,7 +49,7 @@ const LoginScreen = () => {
 
     const submitHandler = (e) => {
         e.preventDefault()
-        dispatch(login(email, password))
+        login(email, password)
     }
 
     return <FormContainer>
@@ -76,8 +75,8 @@ const LoginScreen = () => {
 
         <Row className="py-3">
             <Col>
-                {/* New Customer ? <Link to={redirect ? `/register?redirect=${redirect}` : "/register"}>Register</Link> */}
-                New Customer ? <Link to="/register">Register</Link>
+                New Customer ? <Link to={redirect ? `/register?redirect=${redirect}` : "/register"}>Register</Link>
+                {/* New Customer ? <Link to="/register">Register</Link> */}
             </Col>
         </Row>
     </FormContainer>;

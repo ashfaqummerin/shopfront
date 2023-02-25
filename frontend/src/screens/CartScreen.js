@@ -1,6 +1,6 @@
 import { Button, Card, Col, Form, Image, ListGroup, Row } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux"
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, redirect } from "react-router-dom";
 import Message from "../components/Message";
 import { CART_ADD_ITEM, CART_REMOVE_ITEM } from "../redux/cartSlice"
 
@@ -9,15 +9,12 @@ const CartScreen = () => {
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const { cartItems } = useSelector(state => state.cart)
-
     const removeFromCartHandler = (id) => {
         dispatch(CART_REMOVE_ITEM(id))
     }
 
     const checkOutHandler = () => {
         navigate("/login?redirect=shipping")
-
-
     }
 
     // const subtotal = cartItems.reduce(

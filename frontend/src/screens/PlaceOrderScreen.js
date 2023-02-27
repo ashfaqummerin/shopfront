@@ -2,9 +2,14 @@ import { Row, Col, ListGroup, Image, Card, Button } from "react-bootstrap"
 import { useSelector, useDispatch } from "react-redux";
 import Message from "../components/Message"
 import CheckoutSteps from "../components/CheckoutSteps";
-import { Link } from "react-router-dom";
-import { useEffect, useMemo } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { ORDER_CREATE_REQUEST, ORDER_CREATE_SUCCESS, ORDER_CREATE_FAIL } from "../redux/orderSlice";
+import axios from "axios";
+
 const PlaceOrderScreen = () => {
+    const dispatch = useDispatch()
+    const navigate = useNavigate()
     const cart = { ...useSelector(state => state.cart) }
 
     //  Calculate Prices
@@ -16,8 +21,52 @@ const PlaceOrderScreen = () => {
     cart.taxPrice = addDecimals(((0.15 * cart.itemsPrice).toFixed(2)))
     cart.totalPrice = (Number(cart.itemsPrice) + Number(cart.taxPrice) + Number(cart.shippingPrice)).toFixed(2)
 
+    //  USER INFO FROM STORE
+    const userLogin = useSelector(state => state.userLogin)
+    const { userInfo } = userLogin
+
+    //  ORDER STATE FROM STORE
+    const orderCreate = useSelector(state => state.orderCreate)
+    const { success, order, error } = orderCreate
+
+    // ORDER ACTIONS
+
+    const createOrder = async (order) => {
+        try {
+            dispatch(ORDER_CREATE_REQUEST())
+
+            const config = {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${userInfo.token}`
+                }
+            }
+            const { data } = await axios.post("/api/orders", order, config)
+
+            dispatch(ORDER_CREATE_SUCCESS(data))
+
+        } catch (error) {
+            dispatch(ORDER_CREATE_FAIL(error))
+        }
+    }
+
+    useEffect(() => {
+        if (success) {
+            navigate(`/order/${order._id}`)
+        }
+        //eslint-disable-next-line
+    }, [navigate, success])
+
     const placeOrderHandler = () => {
-        console.log("clicked")
+        createOrder({
+            orderItems: cart.cartItems,
+            shippingAddress: cart.shippingAddress,
+            paymentMethod: cart.paymentMethod,
+            itemsPrice: cart.itemsPrice,
+            shippingPrice: cart.shippingPrice,
+            taxPrice: cart.taxPrice,
+            totalPrice: cart.totalPrice
+        })
     }
 
     return (
@@ -96,6 +145,9 @@ const PlaceOrderScreen = () => {
                                     <Col>Total</Col>
                                     <Col>$ {cart.totalPrice}</Col>
                                 </Row>
+                            </ListGroup.Item>
+                            <ListGroup.Item>
+                                {error && <Message variant="danger">{error}</Message>}
                             </ListGroup.Item>
                             <ListGroup.Item>
                                 <Button style={{ width: "100%" }} type="button" disabled={cart.cartItems === 0} onClick={placeOrderHandler}>Place Order</Button>

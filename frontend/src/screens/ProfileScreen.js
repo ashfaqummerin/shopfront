@@ -17,7 +17,7 @@ const ProfileScreen = () => {
 
     const dispatch = useDispatch()
     const navigate = useNavigate()
-    // @USER DETAILS FROM STATE
+    // @USER DETAILS FROM STORE
     const userDetails = useSelector(state => state.userLogin)
     const { loading, error, user } = userDetails
 
@@ -58,7 +58,7 @@ const ProfileScreen = () => {
             }
 
             const { data } = await axios.put("/api/users/profile", user, config)
-            console.log("update", data)
+            // console.log("update", data)
             dispatch(USER_UPDATE_PROFILE_SUCCESS(data))
             setName(data.name)
             setEmail(data.email)

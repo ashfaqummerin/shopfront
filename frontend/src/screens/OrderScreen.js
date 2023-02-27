@@ -6,6 +6,7 @@ import { Row, Col, ListGroup, Image, Card, Button } from "react-bootstrap"
 import Message from "../components/Message"
 import Loader from "../components/Loader"
 import { ORDER_DETAIL_REQUEST, ORDER_DETAIL_SUCCESS, ORDER_DETAIL_FAIL } from "../redux/orderDetailSlice"
+import { ORDER_PAY_REQUEST, ORDER_PAY_SUCCESS, ORDER_PAY_FAIL, ORDER_PAY_RESET } from "../redux/orderPaySlice"
 
 const OrderScreen = () => {
     const { id } = useParams()
@@ -39,6 +40,27 @@ const OrderScreen = () => {
         getOrderDetails(id)
 
     }, [])
+
+    // ORDER PAY ACTION
+
+    const payOrder = async (orderId, paymentResult) => {
+        try {
+            dispatch(ORDER_PAY_REQUEST())
+
+            const config = {
+                header: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${userInfo.token}`
+                }
+            }
+
+            const { data } = await axios.put(`/api/orders/:${orderId}`, paymentResult, config)
+
+            dispatch(ORDER_DETAIL_SUCCESS(data))
+        } catch (error) {
+
+        }
+    }
 
     return loading ? <Loader /> : error ? <Message variant="danger">{error}</Message> : <>
         <h1>Order {order._id}</h1>

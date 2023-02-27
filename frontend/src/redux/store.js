@@ -4,6 +4,7 @@ import cartReducer from "./cartSlice"
 import userLoginReducer from "./userSlice"
 import orderCreateReducer from "./orderCreateSlice"
 import orderDetailReducer from "./orderDetailSlice"
+import orderPayReducer from "./orderPaySlice"
 
 const store = configureStore({
     reducer: combineReducers({
@@ -11,7 +12,8 @@ const store = configureStore({
         cart: cartReducer,
         userLogin: userLoginReducer,
         orderCreate: orderCreateReducer,
-        orderDetails: orderDetailReducer
+        orderDetails: orderDetailReducer,
+        orderPay: orderPayReducer
     }),
 
 })

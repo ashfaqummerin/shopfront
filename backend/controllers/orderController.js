@@ -29,12 +29,19 @@ const addOrderItems = asyncHandler(async (req, res) => {
 // Access Private
 
 const getOrderById = asyncHandler(async (req, res) => {
-    const order = await Order.findById(req.params.id).populate("user" | "name email")
+    try {
+
+        const order = await Order.findById(req.params.id).populate({ path: "user", select: "name email" })
     if (order) {
         res.json(order)
     } else {
         res.status(404)
         throw new Error("Order not found")
+    }
+    } catch (error) {
+        console.log("orderIdError", error)
+        res.status(400)
+        throw new Error(error.message)
     }
 
 })

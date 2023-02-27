@@ -4,7 +4,7 @@ import Message from "../components/Message"
 import CheckoutSteps from "../components/CheckoutSteps";
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
-import { ORDER_CREATE_REQUEST, ORDER_CREATE_SUCCESS, ORDER_CREATE_FAIL } from "../redux/orderSlice";
+import { ORDER_CREATE_REQUEST, ORDER_CREATE_SUCCESS, ORDER_CREATE_FAIL } from "../redux/orderCreateSlice";
 import axios from "axios";
 
 const PlaceOrderScreen = () => {
@@ -52,7 +52,8 @@ const PlaceOrderScreen = () => {
 
     useEffect(() => {
         if (success) {
-            navigate(`/order/${order._id}`)
+            navigate(`/orders/${order._id}`)
+            console.log("orderid:", order._id)
         }
         //eslint-disable-next-line
     }, [navigate, success])

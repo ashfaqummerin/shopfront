@@ -4,7 +4,7 @@ const orderSchema = mongoose.Schema({
     user: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
-        ref: "user"
+        ref: "User"
     },
     orderItems: [
         {
@@ -34,6 +34,11 @@ const orderSchema = mongoose.Schema({
         status: { type: String },
         update_time: { type: String },
         email_address: { type: String }
+    },
+    itemsPrice: {
+        type: String,
+        required: true,
+        default: 0.0
     },
     taxPrice: {
         type: String,

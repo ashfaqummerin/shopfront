@@ -16,9 +16,12 @@ export const orderListMySlice = createSlice({
         ORDER_LIST_MY_FAIL: (state, action) => {
             state.loading = false
             state.error = action.payload
+        },
+        ORDER_LIST_MY_RESET: (state) => {
+            { state.orders = [] }
         }
     }
 })
 
-export const { ORDER_LIST_MY_REQUEST, ORDER_LIST_MY_SUCCESS, ORDER_LIST_MY_FAIL } = orderListMySlice.actions
+export const { ORDER_LIST_MY_REQUEST, ORDER_LIST_MY_SUCCESS, ORDER_LIST_MY_FAIL, ORDER_LIST_MY_RESET } = orderListMySlice.actions
 export default orderListMySlice.reducer

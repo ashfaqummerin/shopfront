@@ -2,6 +2,7 @@ import { Nav, Navbar, Container, NavDropdown } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap"
 import { useSelector, useDispatch } from "react-redux";
 import { USER_LOGOUT } from "../redux/userSlice";
+import { ORDER_LIST_MY_RESET } from "../redux/orderListMySlice";
 
 const Header = () => {
     const userLogin = useSelector(state => state.userLogin)
@@ -11,6 +12,7 @@ const Header = () => {
     const logoutHandler = () => {
         localStorage.removeItem("userInfo")
         dispatch(USER_LOGOUT())
+        dispatch(ORDER_LIST_MY_RESET())
     }
 
     return (

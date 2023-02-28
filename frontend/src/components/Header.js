@@ -3,16 +3,22 @@ import { LinkContainer } from "react-router-bootstrap"
 import { useSelector, useDispatch } from "react-redux";
 import { USER_LOGOUT } from "../redux/userSlice";
 import { ORDER_LIST_MY_RESET } from "../redux/orderListMySlice";
+import { USER_LIST_RESET } from "../redux/userListSlice";
+import { useNavigate } from "react-router-dom"
 
 const Header = () => {
+    const navigate = useNavigate()
+    const dispatch = useDispatch()
     const userLogin = useSelector(state => state.userLogin)
     const { userInfo } = userLogin
-    const dispatch = useDispatch()
 
     const logoutHandler = () => {
         localStorage.removeItem("userInfo")
         dispatch(USER_LOGOUT())
         dispatch(ORDER_LIST_MY_RESET())
+        dispatch(USER_LIST_RESET())
+        navigate("/login")
+
     }
 
     return (

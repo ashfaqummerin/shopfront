@@ -16,9 +16,12 @@ export const userListSlice = createSlice({
         USER_LIST_FAIL: (state, action) => {
             state.loading = false
             state.error = action.payload
+        },
+        USER_LIST_RESET: (state) => {
+            { state.users = [] }
         }
     }
 })
 
-export const { USER_LIST_REQUEST, USER_LIST_SUCCESS, USER_LIST_FAIL } = userListSlice.actions
+export const { USER_LIST_REQUEST, USER_LIST_SUCCESS, USER_LIST_FAIL, USER_LIST_RESET } = userListSlice.actions
 export default userListSlice.reducer

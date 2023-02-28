@@ -6,9 +6,11 @@ import Message from "../components/Message";
 import Loader from "../components/Loader";
 import { LinkContainer } from "react-router-bootstrap"
 import { useEffect } from "react";
+import { useNavigate } from "react-router-dom"
 
 const UserListScreen = () => {
     const dispatch = useDispatch()
+    const navigate = useNavigate()
 
     const userLogin = useSelector(state => state.userLogin)
     const { userInfo } = userLogin
@@ -31,7 +33,11 @@ const UserListScreen = () => {
     }
 
     useEffect(() => {
+        if (userInfo && userInfo.isAdmin) {
         listUsers()
+        } else {
+            navigate("/login")
+        }
     }, [])
 
     const deleteHandler = (id) => {

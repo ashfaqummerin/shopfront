@@ -5,6 +5,7 @@ import userLoginReducer from "./userSlice"
 import orderCreateReducer from "./orderCreateSlice"
 import orderDetailReducer from "./orderDetailSlice"
 import orderPayReducer from "./orderPaySlice"
+import orderListMyReducer from "./orderListMySlice"
 
 const store = configureStore({
     reducer: combineReducers({
@@ -13,7 +14,8 @@ const store = configureStore({
         userLogin: userLoginReducer,
         orderCreate: orderCreateReducer,
         orderDetails: orderDetailReducer,
-        orderPay: orderPayReducer
+        orderPay: orderPayReducer,
+        orderListMy: orderListMyReducer
     }),
 
 })

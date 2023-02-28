@@ -1,11 +1,13 @@
 import { useDispatch, useSelector } from "react-redux";
 import { USER_DETAIL_REQUEST, USER_DETAIL_SUCCESS, USER_DETAIL_FAIL, USER_UPDATE_PROFILE_REQUEST, USER_UPDATE_PROFILE_SUCCESS, USER_UPDATE_PROFILE_FAIL } from "../redux/userSlice";
+import { ORDER_LIST_MY_REQUEST, ORDER_LIST_MY_SUCCESS, ORDER_LIST_MY_FAIL } from "../redux/orderListMySlice";
 import axios from "axios"
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom"
-import { Row, Col, Button, Form } from "react-bootstrap"
+import { Row, Col, Button, Form, Table } from "react-bootstrap"
 import Message from "../components/Message";
 import Loader from "../components/Loader";
+import { LinkContainer } from "react-router-bootstrap"
 
 const ProfileScreen = () => {
 
@@ -26,6 +28,9 @@ const ProfileScreen = () => {
 
     const updateUser = useSelector(state => state.userLogin)
     const { success } = updateUser
+
+    const orderListMy = useSelector(state => state.orderListMy)
+    const { orders, loading: loadingOrders, error: errorOrders } = orderListMy
 
     // @USER DETAILS ACTION
     const getUserDetails = async (id) => {
@@ -67,6 +72,24 @@ const ProfileScreen = () => {
         }
     }
 
+    // LIST MY ORDERS ACTIONS
+    const listMyOrders = async () => {
+        try {
+            dispatch(ORDER_LIST_MY_REQUEST())
+
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${userInfo.token}`
+                }
+            }
+            const { data } = await axios.get(`/api/orders/myorders`, config)
+            dispatch(ORDER_LIST_MY_SUCCESS(data))
+
+        } catch (error) {
+            dispatch(ORDER_LIST_MY_FAIL(error))
+        }
+    }
+
     useEffect(() => {
 
         if (!userInfo) {
@@ -74,7 +97,7 @@ const ProfileScreen = () => {
         } else {
             if (!user.name) {
                 getUserDetails("profile")
-
+                listMyOrders()
             } else {
                 setName(userInfo.name)
                 setEmail(userInfo.email)
@@ -125,6 +148,39 @@ const ProfileScreen = () => {
         </Col>
         <Col md={9}>
             <h2>My Orders</h2>
+            {loadingOrders ? <Loader /> : errorOrders ? <Message variant="danger">{errorOrders}</Message> : (
+                <Table striped bordered hover responsive className="table-sm">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>DATE</th>
+                            <th>TOTAL</th>
+                            <th>PAID</th>
+                            <th>DELIVERED</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {orders.map(order => (
+                            <tr key={order.id}>
+                                <td>{order._id}</td>
+                                {/* created at not working */}
+                                {/* <td>{order.createdAt.substring(0, 10)}</td> */}
+                                <td>{order.isPaid ? order.paidAt.substring(0, 10) : (<i className="fas fa-times" style={{ color: "red" }}></i>)}</td>
+                                <td>{order.totalPrice}</td>
+                                <td>{order.isPaid ? order.paidAt.substring(0, 10) : (<i className="fas fa-times" style={{ color: "red" }}></i>)}</td>
+                                <td>{order.isDelivered ? order.deliveredAt.substring(0, 10) : <i className="fas fa-times" style={{ color: "red" }}></i>}</td>
+                                <td>
+                                    <LinkContainer to={`order/${order._id}`}>
+                                        <Button className="btn-sm" variant="light">Details</Button>
+                                    </LinkContainer>
+                                </td>
+
+                            </tr>
+                        ))}
+                    </tbody>
+                </Table>
+            )}
         </Col>
     </Row>);
 }

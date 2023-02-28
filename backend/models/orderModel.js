@@ -72,8 +72,14 @@ const orderSchema = mongoose.Schema({
         type: Date
     }
 }, {
+    // timestamps: { createdAt: true, updatedAt: false }
     timeStamps: true
 })
+
+// Orderschema.set(timestamps, {
+//     createdAt: true,
+//     updatedAt: { path: 'updatedAt', setOnInsert: false }
+// });
 
 const Order = mongoose.model("Order", orderSchema)
 

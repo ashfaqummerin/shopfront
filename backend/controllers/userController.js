@@ -68,7 +68,7 @@ const getUserprofile = asyncHandler(async (req, res) => {
 
     if (user) {
         res.json({
-            id: user._id,
+            _id: user._id,
             name: user.name,
             email: user.email,
             isAdmin: user.isAdmin
@@ -157,7 +157,7 @@ const updateUser = asyncHandler(async (req, res) => {
     if (user) {
         user.name = req.body.name || user.name
         user.email = req.body.email || user.email
-        user.isAdmin = req.body.isAdmin
+        user.isAdmin = req.body.isAdmin 
 
         const updatedUser = await user.save()
 

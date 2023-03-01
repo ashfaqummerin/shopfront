@@ -6,7 +6,7 @@ import { Button, Table } from "react-bootstrap"
 import Message from "../components/Message";
 import Loader from "../components/Loader";
 import { LinkContainer } from "react-router-bootstrap"
-import { useCallback, useEffect } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom"
 
 const UserListScreen = () => {
@@ -44,7 +44,7 @@ const UserListScreen = () => {
             const config = {
                 headers: { Authorization: `Bearer ${userInfo.token}` }
             }
-            const { data } = await axios.delete(`/api/users/${id}`, config)
+            await axios.delete(`/api/users/${id}`, config)
 
             dispatch(USER_DELETE_SUCCESS())
 
@@ -59,7 +59,7 @@ const UserListScreen = () => {
         } else {
             navigate("/login")
         }
-    }, [successDelete])
+    }, [userInfo, successDelete])
 
     // USE CALLBACK HOOK
     // const getUsers = useCallback(() => {
@@ -97,7 +97,7 @@ const UserListScreen = () => {
                                     {user.isAdmin ? <i className="fas fa-check" style={{ color: "green" }}></i> : <i className="fas fa-times" style={{ color: "red" }}></i>}
                                 </td>
                                 <td>
-                                    <LinkContainer to={`/user/${user._id}/edit`}>
+                                    <LinkContainer to={`/admin/user/${user._id}/edit`}>
                                         <Button variant="light" className="btn-sm">
                                             <i className="fas fa-edit"></i>
                                         </Button>

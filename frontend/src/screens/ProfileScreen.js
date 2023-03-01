@@ -43,6 +43,7 @@ const ProfileScreen = () => {
                 }
             }
             const { data } = await axios.get(`/api/users/${id}`, config)
+
             dispatch(USER_DETAIL_SUCCESS(data))
 
         } catch (error) {

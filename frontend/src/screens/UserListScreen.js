@@ -1,11 +1,12 @@
 import { USER_LIST_REQUEST, USER_LIST_SUCCESS, USER_LIST_FAIL } from "../redux/userListSlice";
+import { USER_DELETE_REQUEST, USER_DELETE_SUCCESS, USER_DELETE_FAIL } from "../redux/userDeleteSlice";
 import { useDispatch, useSelector } from "react-redux"
 import axios from "axios";
 import { Button, Table } from "react-bootstrap"
 import Message from "../components/Message";
 import Loader from "../components/Loader";
 import { LinkContainer } from "react-router-bootstrap"
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom"
 
 const UserListScreen = () => {
@@ -17,6 +18,9 @@ const UserListScreen = () => {
     // USER LIST STATE FROM STORE
     const userList = useSelector(state => state.userList)
     const { loading, error, users } = userList
+
+    const userDelete = useSelector(state => state.userDelete)
+    const { success: successDelete } = userDelete
 
     // LIST USERS ACTION
     const listUsers = async () => {
@@ -32,16 +36,41 @@ const UserListScreen = () => {
         }
     }
 
+    // USER DELETE ACTION
+    const deleteUser = async (id) => {
+        try {
+            dispatch(USER_DELETE_REQUEST())
+
+            const config = {
+                headers: { Authorization: `Bearer ${userInfo.token}` }
+            }
+            const { data } = await axios.delete(`/api/users/${id}`, config)
+
+            dispatch(USER_DELETE_SUCCESS())
+
+        } catch (error) {
+            dispatch(USER_DELETE_FAIL(error))
+
+        }
+    }
     useEffect(() => {
         if (userInfo && userInfo.isAdmin) {
-        listUsers()
+            listUsers()
         } else {
             navigate("/login")
         }
-    }, [])
+    }, [successDelete])
+
+    // USE CALLBACK HOOK
+    // const getUsers = useCallback(() => {
+    //     listUsers()
+    // }, [userInfo])
 
     const deleteHandler = (id) => {
-        console.log("delete")
+        if ((window.confirm("Are you sure"))) {
+            deleteUser(id)
+        } 
+
     }
 
     return (

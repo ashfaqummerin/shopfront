@@ -9,10 +9,12 @@ import orderListMyReducer from "./orderListMySlice"
 import userListReducer from "./userListSlice"
 import userDeleteReducer from "./userDeleteSlice"
 import userUpdateReducer from "./userUpdateSlice"
+import productDeleteReducer from "./productDeleteSlice"
 
 const store = configureStore({
     reducer: combineReducers({
         productList: productReducer,
+        productDelete: productDeleteReducer,
         cart: cartReducer,
         userLogin: userLoginReducer,
         userList: userListReducer,
@@ -22,6 +24,7 @@ const store = configureStore({
         orderDetails: orderDetailReducer,
         orderPay: orderPayReducer,
         orderListMy: orderListMyReducer,
+
     }),
 
 })

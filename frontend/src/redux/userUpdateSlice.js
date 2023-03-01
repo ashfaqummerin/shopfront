@@ -18,7 +18,8 @@ export const userUpdateSlice = createSlice({
             state.error = action.payload
         },
         USER_UPDATE_RESET: (state) => {
-            { state.user = {} }
+            state.user = {}
+            state.success = false
         }
     }
 })

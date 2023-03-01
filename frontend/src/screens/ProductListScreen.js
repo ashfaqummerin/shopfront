@@ -6,11 +6,10 @@ import Loader from "../components/Loader";
 import { LinkContainer } from "react-router-bootstrap"
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom"
-import { useParams } from "react-router-dom";
-import { PRODUCT_DETAIL_FAIL, PRODUCT_DETAIL_REQUEST, PRODUCT_DETAIL_SUCCESS } from "../redux/productSlice";
+import { PRODUCT_DELETE_REQUEST, PRODUCT_DELETE_SUCCESS, PRODUCT_DELETE_FAIL } from "../redux/productDeleteSlice";
+import { PRODUCT_LIST_REQUEST, PRODUCT_LIST_SUCCESS, PRODUCT_LIST_FAIL } from "../redux/productSlice"; 
 
 const ProductListScreen = () => {
-    const { id } = useParams()
     const dispatch = useDispatch()
     const navigate = useNavigate()
 
@@ -21,29 +20,49 @@ const ProductListScreen = () => {
     const productList = useSelector(state => state.productList)
     const { loading, error, products } = productList
 
+    const productDelete = useSelector(state => state.productDelete)
+    const { loading: loadingDelete, error: errorDelete, success: successDelete } = productDelete
+
     // LIST PRODUCTS ACTION
 
     const listProducts = async () => {
         try {
-            dispatch(PRODUCT_DETAIL_REQUEST())
+            dispatch(PRODUCT_LIST_REQUEST())
             const { data } = await axios.get(`/api/products`)
-            dispatch(PRODUCT_DETAIL_SUCCESS(data))
+            dispatch(PRODUCT_LIST_SUCCESS(data))
         } catch (error) {
-            dispatch(PRODUCT_DETAIL_FAIL(error))
+            dispatch(PRODUCT_LIST_FAIL(error))
         }
     }
 
+    // PRODUCT DELETE ACTION
+    const deleteProduct = async (id) => {
+        try {
+            dispatch(PRODUCT_DELETE_REQUEST())
+
+            const config = {
+                headers: { Authorization: `Bearer ${userInfo.token}` }
+            }
+
+            await axios.delete(`/api/products/${id}`, config)
+            dispatch(PRODUCT_DELETE_SUCCESS())
+
+        } catch (error) {
+            dispatch(PRODUCT_DELETE_FAIL(error))
+        }
+    }
     useEffect(() => {
+
         if (userInfo && userInfo.isAdmin) {
             listProducts()
         } else {
             navigate("/login")
         }
-    }, [userInfo])
+    }, [userInfo, successDelete])
 
     const deleteHandler = (id) => {
         if ((window.confirm("Are you sure"))) {
-            // delete products
+            deleteProduct(id)
         }
     }
 
@@ -63,7 +82,8 @@ const ProductListScreen = () => {
                     </Button>
                 </Col>
             </Row>
-
+            {loadingDelete && <Loader />}
+            {errorDelete && <Message variant="danger">{errorDelete}</Message>}
             {loading ? <Loader /> : error ? <Message variant="danger">{error}</Message> : (
                 <Table striped bordered hover responsive className="table-sm" >
                     <thead>
@@ -85,7 +105,7 @@ const ProductListScreen = () => {
                                 <td>{product.category}</td>
                                 <td>{product.brand}</td>
                                 <td>
-                                    <LinkContainer to={`/admin/user/${product._id}/edit`}>
+                                    <LinkContainer to={`/admin/products/${product._id}/edit`}>
                                         <Button variant="light" className="btn-sm">
                                             <i className="fas fa-edit"></i>
                                         </Button>

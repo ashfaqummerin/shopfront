@@ -73,7 +73,7 @@ const orderSchema = mongoose.Schema({
     }
 }, {
     // timestamps: { createdAt: true, updatedAt: false }
-    timeStamps: true
+    timestamps: true
 })
 
 // Orderschema.set(timestamps, {

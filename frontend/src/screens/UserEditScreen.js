@@ -7,6 +7,7 @@ import Message from "../components/Message";
 import Loader from "../components/Loader";
 import FormContainer from "../components/FormContainer";
 import { USER_DETAIL_REQUEST, USER_DETAIL_SUCCESS, USER_DETAIL_FAIL } from "../redux/userSlice";
+import { USER_UPDATE_REQUEST, USER_UPDATE_SUCCESS, USER_UPDATE_FAIL, USER_UPDATE_RESET } from "../redux/userUpdateSlice";
 
 const UserEditScreen = () => {
     const dispatch = useDispatch()
@@ -15,7 +16,9 @@ const UserEditScreen = () => {
     const [email, setEmail] = useState("")
     const [isAdmin, setIsAdmin] = useState(false)
 
+    // BOTH RETURNS ID FROM PATH PARAMS
     const userId = useParams().id
+    // const { id } = useParams()
 
     // @USER DETAILS FROM STORE
     const userDetails = useSelector(state => state.userLogin)
@@ -23,6 +26,9 @@ const UserEditScreen = () => {
 
     const userLogin = useSelector(state => state.userLogin)
     const { userInfo } = userLogin
+
+    const userUpdate = useSelector(state => state.userUpdate)
+    const { loading: loadingUpdate, success: successUpdate, error: errorUpdate } = userUpdate
 
     // @USER DETAILS ACTION
     const getUserDetails = async (id) => {
@@ -42,18 +48,45 @@ const UserEditScreen = () => {
         }
     }
 
+    // USER UPDATE ACTION
+
+    const updateUser = async (user) => {
+        try {
+            dispatch(USER_UPDATE_REQUEST())
+            const config = {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${userInfo.token}`
+                }
+            }
+            const { data } = await axios.put(`/api/users/${user._id}`, user, config)
+
+            dispatch(USER_UPDATE_SUCCESS())
+            dispatch(USER_DETAIL_SUCCESS(data))
+        } catch (error) {
+            dispatch(USER_UPDATE_FAIL(error))
+        }
+    }
+
     useEffect(() => {
-        if (!user.name || user._id !== userId) {
-            getUserDetails(userId)
+        if (successUpdate) {
+            dispatch(USER_UPDATE_RESET())
+            navigate("/admin/userlist")
+
         } else {
-            setName(user.name)
-            setEmail(user.email)
-            setIsAdmin(user.isAdmin)
+            if (!user.name || user._id !== userId) {
+                getUserDetails(userId)
+            } else {
+                setName(user.name)
+                setEmail(user.email)
+                setIsAdmin(user.isAdmin)
+            }
         }
     }, [user, userId])
 
     const submitHandler = (e) => {
-
+        e.preventDefault()
+        updateUser({ _id: userId, name, email, isAdmin })
     }
 
     return (
@@ -62,6 +95,8 @@ const UserEditScreen = () => {
 
             <FormContainer>
                 <h1>Edit User</h1>
+                {loadingUpdate && <Loader />}
+                {errorUpdate && <Message variant="danger">{errorUpdate}</Message>}
                 {loading ? <Loader /> : error ? <Message variant="danger">{error}</Message> : (
                     <Form onSubmit={submitHandler}>
                         <Form.Group controlId="name">

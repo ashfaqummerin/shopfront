@@ -6,8 +6,9 @@ import Loader from "../components/Loader";
 import { LinkContainer } from "react-router-bootstrap"
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom"
-import { PRODUCT_DELETE_REQUEST, PRODUCT_DELETE_SUCCESS, PRODUCT_DELETE_FAIL } from "../redux/productDeleteSlice";
+import { PRODUCT_DELETE_REQUEST, PRODUCT_DELETE_SUCCESS, PRODUCT_DELETE_FAIL, PRODUCT_DELETE_RESET } from "../redux/productDeleteSlice";
 import { PRODUCT_LIST_REQUEST, PRODUCT_LIST_SUCCESS, PRODUCT_LIST_FAIL } from "../redux/productSlice"; 
+import { PRODUCT_CREATE_REQUEST, PRODUCT_CREATE_SUCCESS, PRODUCT_CREATE_FAIL, PRODUCT_CREATE_RESET } from "../redux/productCreateSlice";
 
 const ProductListScreen = () => {
     const dispatch = useDispatch()
@@ -22,6 +23,9 @@ const ProductListScreen = () => {
 
     const productDelete = useSelector(state => state.productDelete)
     const { loading: loadingDelete, error: errorDelete, success: successDelete } = productDelete
+
+    const productCreate = useSelector(state => state.productCreate)
+    const { loading: loadingCreate, success: successCreate, error: errorCreate, product: createdProduct } = productCreate
 
     // LIST PRODUCTS ACTION
 
@@ -47,18 +51,42 @@ const ProductListScreen = () => {
             await axios.delete(`/api/products/${id}`, config)
             dispatch(PRODUCT_DELETE_SUCCESS())
 
+
         } catch (error) {
             dispatch(PRODUCT_DELETE_FAIL(error))
         }
     }
-    useEffect(() => {
 
-        if (userInfo && userInfo.isAdmin) {
-            listProducts()
-        } else {
-            navigate("/login")
+    // PRODUCT CREATE ACTION
+
+    const createProduct = async () => {
+        try {
+            dispatch(PRODUCT_CREATE_REQUEST())
+
+            const config = {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${userInfo.token}`
+                }
+            }
+            const { data } = await axios.post("/api/products", {}, config)
+            dispatch(PRODUCT_CREATE_SUCCESS(data))
+        } catch (error) {
+            dispatch(PRODUCT_CREATE_FAIL(error))
         }
-    }, [userInfo, successDelete])
+    }
+
+    useEffect(() => {
+        if (userInfo.isAdmin) {
+            dispatch(PRODUCT_CREATE_RESET())
+            dispatch(PRODUCT_DELETE_RESET())
+            listProducts()
+            if (successCreate) navigate(`/admin/product/${createdProduct._id}/edit`)
+
+        } else {
+            { navigate("/login") }
+        }
+    }, [userInfo, successDelete, successCreate, navigate, dispatch])
 
     const deleteHandler = (id) => {
         if ((window.confirm("Are you sure"))) {
@@ -67,7 +95,7 @@ const ProductListScreen = () => {
     }
 
     const createProductHandler = () => {
-        console.log("create")
+        createProduct()
     }
 
     return (
@@ -84,6 +112,8 @@ const ProductListScreen = () => {
             </Row>
             {loadingDelete && <Loader />}
             {errorDelete && <Message variant="danger">{errorDelete}</Message>}
+            {loadingCreate && <Loader />}
+            {errorCreate && <Message variant="danger">{errorCreate}</Message>}
             {loading ? <Loader /> : error ? <Message variant="danger">{error}</Message> : (
                 <Table striped bordered hover responsive className="table-sm" >
                     <thead>

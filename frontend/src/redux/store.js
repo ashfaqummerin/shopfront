@@ -10,11 +10,13 @@ import userListReducer from "./userListSlice"
 import userDeleteReducer from "./userDeleteSlice"
 import userUpdateReducer from "./userUpdateSlice"
 import productDeleteReducer from "./productDeleteSlice"
+import productCreateReducer from "./productCreateSlice"
 
 const store = configureStore({
     reducer: combineReducers({
         productList: productReducer,
         productDelete: productDeleteReducer,
+        productCreate: productCreateReducer,
         cart: cartReducer,
         userLogin: userLoginReducer,
         userList: userListReducer,

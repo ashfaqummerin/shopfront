@@ -17,9 +17,15 @@ export const productDeleteSlice = createSlice({
             state.loading = false
             state.success = false
             state.error = action.payload
+        },
+        PRODUCT_DELETE_RESET: (state, action) => {
+            state.loading = false
+            state.success = false
+            // state = {}
+
         }
     }
 })
 
-export const { PRODUCT_DELETE_REQUEST, PRODUCT_DELETE_SUCCESS, PRODUCT_DELETE_FAIL } = productDeleteSlice.actions
+export const { PRODUCT_DELETE_REQUEST, PRODUCT_DELETE_SUCCESS, PRODUCT_DELETE_FAIL, PRODUCT_DELETE_RESET } = productDeleteSlice.actions
 export default productDeleteSlice.reducer

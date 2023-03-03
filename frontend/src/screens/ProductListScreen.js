@@ -89,7 +89,7 @@ const ProductListScreen = () => {
             if (successUpdate) dispatch(PRODUCT_UPDATE_RESET())
             listProducts()
         } else {
-            { navigate("/login") }
+            navigate("/login") 
         }
     }, [userInfo, successDelete, successCreate, navigate, dispatch])
 

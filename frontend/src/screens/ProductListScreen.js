@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom"
 import { PRODUCT_DELETE_REQUEST, PRODUCT_DELETE_SUCCESS, PRODUCT_DELETE_FAIL, PRODUCT_DELETE_RESET } from "../redux/productDeleteSlice";
 import { PRODUCT_LIST_REQUEST, PRODUCT_LIST_SUCCESS, PRODUCT_LIST_FAIL } from "../redux/productSlice"; 
 import { PRODUCT_CREATE_REQUEST, PRODUCT_CREATE_SUCCESS, PRODUCT_CREATE_FAIL, PRODUCT_CREATE_RESET } from "../redux/productCreateSlice";
+import { PRODUCT_UPDATE_RESET } from "../redux/productUpdateSlice";
 
 const ProductListScreen = () => {
     const dispatch = useDispatch()
@@ -27,11 +28,15 @@ const ProductListScreen = () => {
     const productCreate = useSelector(state => state.productCreate)
     const { loading: loadingCreate, success: successCreate, error: errorCreate, product: createdProduct } = productCreate
 
+    const productUpdate = useSelector(state => state.productUpdate)
+    const { loading: loadingUpdate, success: successUpdate, error: errorUpdate } = productUpdate
+
     // LIST PRODUCTS ACTION
 
     const listProducts = async () => {
         try {
             dispatch(PRODUCT_LIST_REQUEST())
+            console.log("called from list screen")
             const { data } = await axios.get(`/api/products`)
             dispatch(PRODUCT_LIST_SUCCESS(data))
         } catch (error) {
@@ -78,11 +83,11 @@ const ProductListScreen = () => {
 
     useEffect(() => {
         if (userInfo.isAdmin) {
-            dispatch(PRODUCT_CREATE_RESET())
-            dispatch(PRODUCT_DELETE_RESET())
-            listProducts()
-            if (successCreate) navigate(`/admin/product/${createdProduct._id}/edit`)
 
+            if (successCreate) navigate(`/admin/product/${createdProduct._id}/edit`)
+            if (successDelete) dispatch(PRODUCT_DELETE_RESET())
+            if (successUpdate) dispatch(PRODUCT_UPDATE_RESET())
+            listProducts()
         } else {
             { navigate("/login") }
         }
@@ -135,7 +140,7 @@ const ProductListScreen = () => {
                                 <td>{product.category}</td>
                                 <td>{product.brand}</td>
                                 <td>
-                                    <LinkContainer to={`/admin/products/${product._id}/edit`}>
+                                    <LinkContainer to={`/admin/product/${product._id}/edit`}>
                                         <Button variant="light" className="btn-sm">
                                             <i className="fas fa-edit"></i>
                                         </Button>

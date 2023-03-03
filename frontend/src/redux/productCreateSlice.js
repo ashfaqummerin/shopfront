@@ -23,7 +23,7 @@ export const productCreateSlice = createSlice({
         PRODUCT_CREATE_RESET: (state) => {
             state.loading = false
             state.success = false
-            state.product = {}
+            state.product = {} 
             // state = {}
         }
     }

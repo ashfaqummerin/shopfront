@@ -21,6 +21,7 @@ const ProductEditScreen = () => {
     const [category, setCategory] = useState("")
     const [countInStock, setCountInStock] = useState(0)
     const [description, setDescription] = useState("")
+    const [uploading, setUploading] = useState(false)
 
     const productId = useParams().id
 
@@ -83,6 +84,27 @@ const ProductEditScreen = () => {
         }
     }, [product._id, successUpdate, productId])
 
+    const uploadFileHandler = async (e) => {
+        const file = e.target.files[0]
+        const formData = new FormData()
+        formData.append("image", file)
+        setUploading(true)
+
+        try {
+            const config = {
+                headers: {
+                    "Content-Type": "multipart/form-data"
+                }
+            }
+            const { data } = await axios.post("/api/upload", formData, config)
+            setImage(data)
+            setUploading(false)
+        } catch (error) {
+            console.log(error)
+            setUploading(false)
+        }
+    }
+
     const submitHandler = (e) => {
         e.preventDefault()
         updateProduct({
@@ -120,8 +142,12 @@ const ProductEditScreen = () => {
                         <Form.Group controlId="image">
                             <Form.Label>Image</Form.Label>
                             <Form.Control type="text" placeholder="Enter image url" value={image} onChange={e => setImage(e.target.value)} />
-                        </Form.Group>
+                        </Form.Group> 
+                        <Form.Group controlId="formFile">
+                            <Form.Control type="file" onChange={uploadFileHandler}></Form.Control>
+                            {uploading && <Loader />}
 
+                        </Form.Group>
                         <Form.Group controlId="brand">
                             <Form.Label>Brand</Form.Label>
                             <Form.Control type="text" placeholder="Enter Brand" value={brand} onChange={e => setBrand(e.target.value)} />

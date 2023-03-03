@@ -2,16 +2,18 @@ import axios from "axios"
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js"
 import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { useParams, Link } from "react-router-dom"
+import { useParams, Link, useNavigate } from "react-router-dom"
 import { Row, Col, ListGroup, Image, Card, Button } from "react-bootstrap"
 import Message from "../components/Message"
 import Loader from "../components/Loader"
 import { ORDER_DETAIL_REQUEST, ORDER_DETAIL_SUCCESS, ORDER_DETAIL_FAIL } from "../redux/orderDetailSlice"
 import { ORDER_PAY_REQUEST, ORDER_PAY_SUCCESS, ORDER_PAY_FAIL, ORDER_PAY_RESET } from "../redux/orderPaySlice"
+import { ORDER_DELIVER_REQUEST, ORDER_DELIVER_SUCCESS, ORDER_DELIVER_FAIL, ORDER_DELIVER_RESET } from "../redux/orderDeliverSlice"
 
 const OrderScreen = () => {
     const { id } = useParams()
     const dispatch = useDispatch()
+    const navigate = useNavigate()
 
     //  STATE FOR SDK PAYPAL
     const [sdkReady, setSdkReady] = useState(false)
@@ -24,6 +26,9 @@ const OrderScreen = () => {
 
     const orderPay = useSelector(state => state.orderPay)
     const { loading: loadingPay, success: successPay } = orderPay
+
+    const orderDeliver = useSelector(state => state.orderDeliver)
+    const { loading: loadingDeliver, success: successDeliver } = orderDeliver
 
     // GET ORDER DETAIL ACTION
     const getOrderDetails = async (id) => {
@@ -45,6 +50,9 @@ const OrderScreen = () => {
     }
 
     useEffect(() => {
+        if (!userInfo) {
+            navigate("/login")
+        }
         // PAYPAL SCRIPT
         // const addPayPalScript = async () => {
         //     const { data: clientId } = await axios.get("/api/config/paypal")
@@ -60,8 +68,9 @@ const OrderScreen = () => {
         // }
 
         // GET ORDER DETAILS ACTION FIRED IF ORDER ISN'T THERE OR IF WE HAVE A SUCCESS PAY
-        if (!order || !successPay) {
+        if (!order || !successPay || successDeliver) {
             dispatch(ORDER_PAY_RESET())
+            dispatch(ORDER_DELIVER_RESET())
             getOrderDetails(id)
         }
         // IF ORDER ISNT' PAID ADD PAYPAL SCRIPT
@@ -72,7 +81,7 @@ const OrderScreen = () => {
         //         setSdkReady(true)
         //     }
         // }
-    }, [id, successPay])
+    }, [id, successPay, successDeliver])
 
     // ORDER PAY ACTION
 
@@ -88,14 +97,36 @@ const OrderScreen = () => {
             }
 
             const { data } = await axios.put(`/api/orders/${orderId}/pay`, details, config)
-            console.log("data", data)
-            console.log("token", userInfo.token)
+            // console.log("data", data)
+            // console.log("token", userInfo.token)
             dispatch(ORDER_PAY_SUCCESS(data))
         } catch (error) {
             dispatch(ORDER_PAY_FAIL(error))
         }
     }
+    //  ORDER DELIVER ACTION
 
+    const deliverOrder = async (order) => {
+        try {
+            dispatch(ORDER_DELIVER_REQUEST())
+            const config = {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${userInfo.token}`
+                }
+            }
+
+            await axios.put(`/api/orders/${order._id}/deliver`, {}, config)
+            dispatch(ORDER_DELIVER_SUCCESS())
+
+        } catch (error) {
+            dispatch(ORDER_DELIVER_FAIL(error))
+        }
+    }
+
+    const deliverHandler = () => {
+        deliverOrder(order)
+    }
     return loading ? <Loader /> : error ? <Message variant="danger">{error}</Message> : <>
         <h1>Order {order._id}</h1>
         <Row>
@@ -214,6 +245,12 @@ const OrderScreen = () => {
                                     </PayPalScriptProvider>
 
                                 )}
+                            </ListGroup.Item>
+                        )}
+                        {loadingDeliver && <Loader />}
+                        {userInfo && userInfo.isAdmin && order.isPaid && !order.isDelivered && (
+                            <ListGroup.Item>
+                                <Button type="button" className="btn btn-block" onClick={deliverHandler} style={{ width: "100%" }}> Mark as Delivered </Button>
                             </ListGroup.Item>
                         )}
                     </ListGroup>

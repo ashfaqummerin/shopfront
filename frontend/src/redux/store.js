@@ -13,6 +13,7 @@ import productDeleteReducer from "./productDeleteSlice"
 import productCreateReducer from "./productCreateSlice"
 import productUpdateReducer from "./productUpdateSlice"
 import orderListReducer from "./orderList"
+import orderDeliverReducer from "./orderDeliverSlice"
 
 const store = configureStore({
     reducer: combineReducers({
@@ -28,6 +29,7 @@ const store = configureStore({
         orderCreate: orderCreateReducer,
         orderDetails: orderDetailReducer,
         orderPay: orderPayReducer,
+        orderDeliver: orderDeliverReducer,
         orderListMy: orderListMyReducer,
         orderList: orderListReducer
     }),

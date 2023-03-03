@@ -73,10 +73,30 @@ const updateOrderToPaid = asyncHandler(async (req, res) => {
             res.json(updatedOrder)
         }
     } catch (error) {
-        console.log("updatedOrderFail", error)
+        // console.log("updatedOrderFail", error)
         res.status(400)
         throw error
 
+    }
+})
+
+//@Desc Update order to delivered
+//@route GET /api/orders/:id/deliver
+//access private/admin
+
+const updateOrderToDelivered = asyncHandler(async (req, res) => {
+    try {
+        const order = await Order.findById(req.params.id)
+        if (order) {
+            order.isDelivered = true
+            order.deliveredAt = Date.now()
+        }
+        const updatedOrder = await order.save()
+        res.json(updatedOrder)
+    } catch (error) {
+        console.log("delivered error", error)
+        res.status(400)
+        throw error
     }
 })
 
@@ -98,4 +118,4 @@ const getOrders = asyncHandler(async (req, res) => {
     res.json(orders)
 })
 
-export { addOrderItems, getOrderById, updateOrderToPaid, getMyOrders, getOrders }
+export { addOrderItems, getOrderById, updateOrderToPaid, getMyOrders, getOrders, updateOrderToDelivered }

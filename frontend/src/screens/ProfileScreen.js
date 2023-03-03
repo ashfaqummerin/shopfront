@@ -163,16 +163,16 @@ const ProfileScreen = () => {
                     </thead>
                     <tbody>
                         {orders.map(order => (
-                            <tr key={order.id}>
+                            <tr key={order._id}>
                                 <td>{order._id}</td>
                                 {/* created at not working */}
-                                {/* <td>{order.createdAt.substring(0, 10)}</td> */}
+                                <td>{order.createdAt.substring(0, 10)}</td>
                                 <td>{order.isPaid ? order.paidAt.substring(0, 10) : (<i className="fas fa-times" style={{ color: "red" }}></i>)}</td>
                                 <td>{order.totalPrice}</td>
                                 <td>{order.isPaid ? order.paidAt.substring(0, 10) : (<i className="fas fa-times" style={{ color: "red" }}></i>)}</td>
                                 <td>{order.isDelivered ? order.deliveredAt.substring(0, 10) : <i className="fas fa-times" style={{ color: "red" }}></i>}</td>
                                 <td>
-                                    <LinkContainer to={`order/${order._id}`}>
+                                    <LinkContainer to={`/orders/${order._id}`}>
                                         <Button className="btn-sm" variant="light">Details</Button>
                                     </LinkContainer>
                                 </td>

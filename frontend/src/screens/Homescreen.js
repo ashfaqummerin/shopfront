@@ -13,7 +13,7 @@ const HomeScreen = () => {
     const { products, loading, error } = useSelector(state => state.productList)
 
     useEffect(() => {
-        const fetchData = async () => {
+        const getProducts = async () => {
             try {
                 dispatch(PRODUCT_LIST_REQUEST())
                 const { data } = await axios.get("/api/products")
@@ -22,7 +22,7 @@ const HomeScreen = () => {
                 dispatch(PRODUCT_LIST_FAIL(error))
             }
         }
-        fetchData()
+        getProducts()
     }, [dispatch])
 
     return (

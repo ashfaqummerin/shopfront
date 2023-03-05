@@ -36,7 +36,7 @@ const ProductEditScreen = () => {
     const { userInfo } = userLogin
 
     // PRODUCT DETAILS ACTION
-    const getProducts = async () => {
+    const getProductDetails = async () => {
         try {
             dispatch(PRODUCT_DETAIL_REQUEST())
             const { data } = await axios.get(`/api/products/${productId}`)
@@ -71,7 +71,7 @@ const ProductEditScreen = () => {
         } else {
 
             if (!product.name || product._id !== productId) {
-                getProducts(productId)
+                getProductDetails(productId)
             } else {
                 setName(product.name)
                 setPrice(product.price)

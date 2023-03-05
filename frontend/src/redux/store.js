@@ -14,6 +14,7 @@ import productCreateReducer from "./productCreateSlice"
 import productUpdateReducer from "./productUpdateSlice"
 import orderListReducer from "./orderList"
 import orderDeliverReducer from "./orderDeliverSlice"
+import productReviewCreateReducer from "./productReviewSlice"
 
 const store = configureStore({
     reducer: combineReducers({
@@ -21,6 +22,7 @@ const store = configureStore({
         productDelete: productDeleteReducer,
         productCreate: productCreateReducer,
         productUpdate: productUpdateReducer,
+        productReviewCreate: productReviewCreateReducer,
         cart: cartReducer,
         userLogin: userLoginReducer,
         userList: userListReducer,

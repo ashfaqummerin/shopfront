@@ -6,12 +6,13 @@ import axios from "axios"
 import Message from "../components/Message";
 import Loader from "../components/Loader";
 import { useDispatch, useSelector } from 'react-redux'
+import { useGetProducts } from "../redux/actions/getProducts"
 
 
 const HomeScreen = () => {
     const dispatch = useDispatch()
     const { products, loading, error } = useSelector(state => state.productList)
-
+    // const { products, loading, error } = useGetProducts()
     useEffect(() => {
         const getProducts = async () => {
             try {

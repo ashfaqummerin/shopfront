@@ -96,13 +96,17 @@ const updateProduct = asyncHandler(async (req, res) => {
 const createdProductReview = asyncHandler(async (req, res) => {
 
     const { rating, comment } = req.body
-    const product = await Product.findById(req.params.id)
+    // console.log(rating, comment)
     try {
+        const product = await Product.findById(req.params.id)
         if (product) {
-            const alreadyReviewed = product.reviews.find(r => r.user.toString() === req.user._id.toString())
+            const alreadyReviewed = product.reviews.find(r => {
+                // console.log("user", r.user)
+                // console.log("requested user", req.user._id)1
+                return r.user.toString() === req.user._id.toString()
+            })
 
             if (alreadyReviewed) {
-                res.status(400)
                 throw new Error("Product already reviewed")
             }
         }
@@ -121,9 +125,9 @@ const createdProductReview = asyncHandler(async (req, res) => {
 
         await product.save()
         res.status(201).json({ message: "Review added" })
-    } catch {
+    } catch (error) {
         res.status(400)
-        throw new Error("Product not found")
+        throw error
     }
 
 })

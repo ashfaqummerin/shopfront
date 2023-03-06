@@ -2,6 +2,7 @@ import { Col, Row } from "react-bootstrap";
 import Product from "../components/Product";
 import { useEffect } from "react";
 import { PRODUCT_LIST_REQUEST, PRODUCT_LIST_SUCCESS, PRODUCT_LIST_FAIL } from "../redux/productSlice"
+
 import axios from "axios"
 import Message from "../components/Message";
 import Loader from "../components/Loader";
@@ -9,6 +10,7 @@ import Paginate from "../components/Paginate";
 import { useDispatch, useSelector } from 'react-redux'
 // import { useListProducts } from "../redux/actions/getProducts"
 import { useParams } from "react-router-dom";
+import ProductCarousel from "../components/ProductCarousel";
 
 
 const HomeScreen = () => {
@@ -17,6 +19,7 @@ const HomeScreen = () => {
     const dispatch = useDispatch()
     const { products, loading, error, page, pages } = useSelector(state => state.productList)
     // const { products, loading, error } = useGetProducts()
+
     useEffect(() => {
         const listProducts = async (keyword = "", pageNumber = "") => {
             try {
@@ -32,6 +35,7 @@ const HomeScreen = () => {
 
     return (
         <>
+            {!keyword && <ProductCarousel />}
             <h1>Latest Products</h1>
             {loading ? <Loader /> : error ? <Message variant="danger">{error}</Message> :
                 (<>

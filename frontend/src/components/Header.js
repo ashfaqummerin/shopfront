@@ -4,7 +4,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { USER_LOGOUT } from "../redux/userSlice";
 import { ORDER_LIST_MY_RESET } from "../redux/orderListMySlice";
 import { USER_LIST_RESET } from "../redux/userListSlice";
-import { useNavigate } from "react-router-dom"
+import { useNavigate, Route, Routes } from "react-router-dom"
+import SearchBox from "./SearchBox";
 
 const Header = () => {
     const navigate = useNavigate()
@@ -28,6 +29,8 @@ const Header = () => {
                     <Navbar.Brand href="/">ProShop</Navbar.Brand>
                     <Navbar.Toggle aria-controls="basic-navbar-nav" />
                     <Navbar.Collapse id="basic-navbar-nav">
+                        <SearchBox />
+
                         <Nav className="ms-auto">
                             <LinkContainer to="/cart">
                                 <Nav.Link><i className="fas fa-shopping-cart"></i> Cart</Nav.Link>

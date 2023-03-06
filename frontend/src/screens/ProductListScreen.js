@@ -3,9 +3,10 @@ import axios from "axios";
 import { Button, Table, Row, Col } from "react-bootstrap"
 import Message from "../components/Message";
 import Loader from "../components/Loader";
+import Paginate from "../components/Paginate";
 import { LinkContainer } from "react-router-bootstrap"
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import { PRODUCT_DELETE_REQUEST, PRODUCT_DELETE_SUCCESS, PRODUCT_DELETE_FAIL, PRODUCT_DELETE_RESET } from "../redux/productDeleteSlice";
 import { PRODUCT_LIST_REQUEST, PRODUCT_LIST_SUCCESS, PRODUCT_LIST_FAIL } from "../redux/productSlice"; 
 import { PRODUCT_CREATE_REQUEST, PRODUCT_CREATE_SUCCESS, PRODUCT_CREATE_FAIL, PRODUCT_CREATE_RESET } from "../redux/productCreateSlice";
@@ -14,13 +15,15 @@ import { PRODUCT_UPDATE_RESET } from "../redux/productUpdateSlice";
 const ProductListScreen = () => {
     const dispatch = useDispatch()
     const navigate = useNavigate()
+    const { keyword } = useParams()
+    const { pageNumber } = useParams() || 1
 
     const userLogin = useSelector(state => state.userLogin)
     const { userInfo } = userLogin
 
     // PRODUCTS LIST STATE FROM STORE
     const productList = useSelector(state => state.productList)
-    const { loading, error, products } = productList
+    const { loading, error, products, page, pages } = productList
 
     const productDelete = useSelector(state => state.productDelete)
     const { loading: loadingDelete, error: errorDelete, success: successDelete } = productDelete
@@ -29,15 +32,14 @@ const ProductListScreen = () => {
     const { loading: loadingCreate, success: successCreate, error: errorCreate, product: createdProduct } = productCreate
 
     const productUpdate = useSelector(state => state.productUpdate)
-    const { loading: loadingUpdate, success: successUpdate, error: errorUpdate } = productUpdate
+    const { success: successUpdate } = productUpdate
 
     // LIST PRODUCTS ACTION
 
-    const listProducts = async () => {
+    const listProducts = async (keyword = "", pageNumber = "") => {
         try {
             dispatch(PRODUCT_LIST_REQUEST())
-            console.log("called from list screen")
-            const { data } = await axios.get(`/api/products`)
+            const { data } = await axios.get(`/api/products?keyword=${keyword}&pageNumber=${pageNumber}`)
             dispatch(PRODUCT_LIST_SUCCESS(data))
         } catch (error) {
             dispatch(PRODUCT_LIST_FAIL(error))
@@ -87,11 +89,11 @@ const ProductListScreen = () => {
             if (successCreate) navigate(`/admin/product/${createdProduct._id}/edit`)
             if (successDelete) dispatch(PRODUCT_DELETE_RESET())
             if (successUpdate) dispatch(PRODUCT_UPDATE_RESET())
-            listProducts()
+            listProducts("", pageNumber)
         } else {
             navigate("/login") 
         }
-    }, [userInfo, successDelete, successCreate, navigate, dispatch])
+    }, [userInfo, successDelete, successCreate, navigate, dispatch, pageNumber])
 
     const deleteHandler = (id) => {
         if ((window.confirm("Are you sure"))) {
@@ -120,6 +122,7 @@ const ProductListScreen = () => {
             {loadingCreate && <Loader />}
             {errorCreate && <Message variant="danger">{errorCreate}</Message>}
             {loading ? <Loader /> : error ? <Message variant="danger">{error}</Message> : (
+                <>
                 <Table striped bordered hover responsive className="table-sm" >
                     <thead>
                         <tr>
@@ -153,6 +156,8 @@ const ProductListScreen = () => {
                         ))}
                     </tbody>
                 </Table>
+                    <Paginate page={page} pages={pages} isAdmin={true} />
+                </>
             )}
         </>);
 }

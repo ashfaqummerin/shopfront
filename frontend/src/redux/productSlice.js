@@ -14,7 +14,9 @@ export const productSlice = createSlice({
         },
         PRODUCT_LIST_SUCCESS: (state, action) => {
             state.loading = false
-            state.products = action.payload
+            state.products = action.payload.products
+            state.pages = action.payload.pages
+            state.page = action.payload.page
         },
         PRODUCT_LIST_FAIL: (state, action) => {
             state.loading = false

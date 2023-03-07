@@ -9,6 +9,7 @@ import Loader from "../components/Loader"
 import Message from "../components/Message"
 import { CART_ADD_ITEM } from "../redux/cartSlice"
 import { PRODUCT_CREATE_REVIEW_REQUEST, PRODUCT_CREATE_REVIEW_SUCCESS, PRODUCT_CREATE_REVIEW_FAIL, PRODUCT_CREATE_REVIEW_RESET } from "../redux/productReviewSlice"
+import Meta from "../components/Meta"
 
 
 const ProductScreen = () => {
@@ -81,6 +82,7 @@ const ProductScreen = () => {
             <Link to="/" className="btn btn-light my-3">Go Back</Link>
             {loading ? <Loader /> : error ? <Message>{error}</Message> :
             <Row>
+                    <Meta title={product?.name} />
                 <Col md={6}>
                     <Image src={product?.image} alt={product?.name} fluid></Image>
                 </Col>

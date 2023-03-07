@@ -11,6 +11,7 @@ import { useDispatch, useSelector } from 'react-redux'
 // import { useListProducts } from "../redux/actions/getProducts"
 import { useParams } from "react-router-dom";
 import ProductCarousel from "../components/ProductCarousel";
+import Meta from "../components/Meta";
 
 
 const HomeScreen = () => {
@@ -35,6 +36,7 @@ const HomeScreen = () => {
 
     return (
         <>
+            <Meta />
             {!keyword && <ProductCarousel />}
             <h1>Latest Products</h1>
             {loading ? <Loader /> : error ? <Message variant="danger">{error}</Message> :

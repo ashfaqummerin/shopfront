@@ -11,44 +11,61 @@ h2 {
     font-size: 1.4rem;
     padding: 0.5rem 0;
 }
+
 h3 {
     padding: 1rem 0;
+    margin: 0 !important;
 }
+    
+a {
+    text-decoration: none !important;
+}
+
 .rating span {
     margin: 0.1rem;
 }
+
 /* Carousel */
-.carousel-item-next,
-.carousel-item-prev,
-.carousel-item-active {
+
+.carousel-item a {
     display: flex;
+    padding: 54px 160px;
 }
 
-.carousel-caption {
-    position: absolute;
-    top: 150px;
-
+.carousel__image {
+    height: 320px;
+    margin-right: 48px;
 }
 
-.carousel-caption h2 {
-    color: grey;
-    font-size: large;
-    position: relative;
-    left: 100px;
-    bottom: 20px;
-}
-
-
-.carousel img {
-    height: 300px;
-    padding: 30px;
-    margin: 40px;
-    border-radius: 10%;
-    align-content: center;
+.carousel__text__container {
     display: flex;
+    flex-direction: column;
     justify-content: center;
 }
 
-.carousel a {
-    margin: 0 auto;
+.carousel__text {
+    display: flex;
+    color: white;
+}
+
+@media (max-width: 1000px) {
+    .carousel-item a {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .carousel__text__container {
+        align-items: center;
+    }
+
+    .carousel__text {
+        text-align: center;
+        font-size: medium;
+    }
+
+    .carousel__image {
+        height: 240px;
+        margin-right: 0;
+    }
 }

@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { PRODUCT_TOP_REQUEST, PRODUCT_TOP_SUCCESS, PRODUCT_TOP_FAIL } from "../redux/productTopSlice"
 import axios from "axios";
+import ProductCarouselItem from "./ProductCarouselItem";
 const ProductCarousel = () => {
     const dispatch = useDispatch()
 
@@ -29,17 +30,17 @@ const ProductCarousel = () => {
     }, [dispatch])
 
     return loading ? <Loader /> : error ? <Message variant="danger">{error}</Message> : (
-        <Carousel slide={false} className="bg-dark">
+        <Carousel className="bg-dark">
             {products.map(product => (
-                <Carousel.Item key={product._id} interval={9999}>
-                    <Link to={`/product/${product._id}`}>
+                <Carousel.Item key={product._id} interval={99999}>
+                    {/* <Link to={`/product/${product._id}`}>
                         <Image src={product.image} alt={product.name} fluid />
                         <Carousel.Caption className="carousel-caption">
                             <h2>{product.name}</h2>
                             <h2>$ {product.price}</h2>
                         </Carousel.Caption>
-
-                    </Link>
+                    </Link> */}
+                    <ProductCarouselItem product={product} />
                 </Carousel.Item>
             ))}
 

@@ -6,7 +6,6 @@ export const userLoginSlice = createSlice({
     name: "userLogin",
     initialState: {
         userInfo: userInfoFromStorage,
-        user: {}
     },
     reducers: {
         USER_LOGIN_REQUEST: (state) => {
@@ -34,22 +33,6 @@ export const userLoginSlice = createSlice({
             state.loading = false
             state.error = action.payload.response.data.message
         },
-        USER_DETAIL_REQUEST: (state, action) => {
-            state = {
-                ...state,
-                loading: true,
-                user: {}
-            }
-            // state.loading = true
-        },
-        USER_DETAIL_SUCCESS: (state, action) => {
-            state.loading = false
-            state.user = action.payload
-        },
-        USER_DETAIL_FAIL: (state, action) => {
-            state.loading = false
-            state.error = action.payload.response.data.message
-        },
         USER_UPDATE_PROFILE_REQUEST: (state) => {
             state.loading = true
         },
@@ -65,10 +48,33 @@ export const userLoginSlice = createSlice({
     }
 })
 
+export const userDetailSlice = createSlice({
+    name: "userDetail",
+    initialState: {
+
+        user: {}
+    },
+    reducers: {
+        USER_DETAIL_REQUEST: (state) => {
+            state.loading = true
+        },
+        USER_DETAIL_SUCCESS: (state, action) => {
+            state.loading = false
+            state.user = action.payload
+        },
+        USER_DETAIL_FAIL: (state, action) => {
+            state.loading = false
+            state.error = action.payload.response.data.message
+        }
+    }
+})
+
 export default userLoginSlice.reducer
 export const {
     USER_LOGIN_REQUEST, USER_LOGIN_SUCESS, USER_LOGIN_FAIL, USER_LOGOUT,
     USER_REGISTER_REQUEST, USER_REGISTER_SUCCESS, USER_REGISTER_FAIL,
-    USER_DETAIL_REQUEST, USER_DETAIL_SUCCESS, USER_DETAIL_FAIL,
     USER_UPDATE_PROFILE_REQUEST, USER_UPDATE_PROFILE_SUCCESS, USER_UPDATE_PROFILE_FAIL
 } = userLoginSlice.actions 
+
+export const userDetailReducer = userDetailSlice.reducer
+export const { USER_DETAIL_REQUEST, USER_DETAIL_SUCCESS, USER_DETAIL_FAIL } = userDetailSlice.actions 

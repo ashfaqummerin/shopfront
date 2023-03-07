@@ -21,7 +21,7 @@ const UserEditScreen = () => {
     // const { id } = useParams()
 
     // @USER DETAILS FROM STORE
-    const userDetails = useSelector(state => state.userLogin)
+    const userDetails = useSelector(state => state.userDetails)
     const { loading, error, user } = userDetails
 
     const userLogin = useSelector(state => state.userLogin)

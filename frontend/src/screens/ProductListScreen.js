@@ -1,5 +1,4 @@
 import { useDispatch, useSelector } from "react-redux"
-import axios from "axios";
 import { Button, Table, Row, Col } from "react-bootstrap"
 import Message from "../components/Message";
 import Loader from "../components/Loader";
@@ -7,86 +6,34 @@ import Paginate from "../components/Paginate";
 import { LinkContainer } from "react-router-bootstrap"
 import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom"
-import { PRODUCT_DELETE_REQUEST, PRODUCT_DELETE_SUCCESS, PRODUCT_DELETE_FAIL, PRODUCT_DELETE_RESET } from "../redux/productDeleteSlice";
-import { PRODUCT_LIST_REQUEST, PRODUCT_LIST_SUCCESS, PRODUCT_LIST_FAIL } from "../redux/productSlice"; 
-import { PRODUCT_CREATE_REQUEST, PRODUCT_CREATE_SUCCESS, PRODUCT_CREATE_FAIL, PRODUCT_CREATE_RESET } from "../redux/productCreateSlice";
+import { PRODUCT_DELETE_RESET } from "../redux/productDeleteSlice";
 import { PRODUCT_UPDATE_RESET } from "../redux/productUpdateSlice";
+import useDeleteProduct from "../redux/actions/deleteProduct";
+import useCreateProduct from "../redux/actions/createProduct";
+import useListProducts from "../redux/actions/getProducts"
+import { PRODUCT_CREATE_RESET } from "../redux/productCreateSlice";
 
 const ProductListScreen = () => {
     const dispatch = useDispatch()
     const navigate = useNavigate()
-    const { keyword } = useParams()
     const { pageNumber } = useParams() || 1
 
-    const userLogin = useSelector(state => state.userLogin)
-    const { userInfo } = userLogin
+    const { userInfo } = useSelector(state => state.userLogin)
+    const { loading, error, products, page, pages, listProducts } = useListProducts()
 
-    // PRODUCTS LIST STATE FROM STORE
-    const productList = useSelector(state => state.productList)
-    const { loading, error, products, page, pages } = productList
+    const { loading: loadingDelete, error: errorDelete, success: successDelete, deleteProduct } = useDeleteProduct()
 
-    const productDelete = useSelector(state => state.productDelete)
-    const { loading: loadingDelete, error: errorDelete, success: successDelete } = productDelete
+    const { createProduct, loading: loadingCreate, success: successCreate, error: errorCreate, product: createdProduct } = useCreateProduct()
+    const { success: successUpdate } = useSelector(state => state.productUpdate)
 
-    const productCreate = useSelector(state => state.productCreate)
-    const { loading: loadingCreate, success: successCreate, error: errorCreate, product: createdProduct } = productCreate
-
-    const productUpdate = useSelector(state => state.productUpdate)
-    const { success: successUpdate } = productUpdate
-
-    // LIST PRODUCTS ACTION
-
-    const listProducts = async (keyword = "", pageNumber = "") => {
-        try {
-            dispatch(PRODUCT_LIST_REQUEST())
-            const { data } = await axios.get(`/api/products?keyword=${keyword}&pageNumber=${pageNumber}`)
-            dispatch(PRODUCT_LIST_SUCCESS(data))
-        } catch (error) {
-            dispatch(PRODUCT_LIST_FAIL(error))
-        }
-    }
-
-    // PRODUCT DELETE ACTION
-    const deleteProduct = async (id) => {
-        try {
-            dispatch(PRODUCT_DELETE_REQUEST())
-
-            const config = {
-                headers: { Authorization: `Bearer ${userInfo.token}` }
-            }
-
-            await axios.delete(`/api/products/${id}`, config)
-            dispatch(PRODUCT_DELETE_SUCCESS())
-
-
-        } catch (error) {
-            dispatch(PRODUCT_DELETE_FAIL(error))
-        }
-    }
-
-    // PRODUCT CREATE ACTION
-
-    const createProduct = async () => {
-        try {
-            dispatch(PRODUCT_CREATE_REQUEST())
-
-            const config = {
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${userInfo.token}`
-                }
-            }
-            const { data } = await axios.post("/api/products", {}, config)
-            dispatch(PRODUCT_CREATE_SUCCESS(data))
-        } catch (error) {
-            dispatch(PRODUCT_CREATE_FAIL(error))
-        }
-    }
 
     useEffect(() => {
         if (userInfo.isAdmin) {
 
-            if (successCreate) navigate(`/admin/product/${createdProduct._id}/edit`)
+            if (successCreate) {
+                navigate(`/admin/product/${createdProduct._id}/edit`)
+                dispatch(PRODUCT_CREATE_RESET())
+            }
             if (successDelete) dispatch(PRODUCT_DELETE_RESET())
             if (successUpdate) dispatch(PRODUCT_UPDATE_RESET())
             listProducts("", pageNumber)
@@ -96,7 +43,7 @@ const ProductListScreen = () => {
     }, [userInfo, successDelete, successCreate, navigate, dispatch, pageNumber])
 
     const deleteHandler = (id) => {
-        if ((window.confirm("Are you sure"))) {
+        if (window.confirm("Are you sure?")) {
             deleteProduct(id)
         }
     }

@@ -26,7 +26,7 @@ const ProductEditScreen = () => {
     const productId = useParams().id
 
     // PRODUCT DETAILS FROM STORE
-    const productDetails = useSelector(state => state.productList)
+    const productDetails = useSelector(state => state.productDetails)
     const { loading, error, product } = productDetails
 
     const productUpdate = useSelector(state => state.productUpdate)

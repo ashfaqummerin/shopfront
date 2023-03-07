@@ -21,7 +21,7 @@ const ProductScreen = () => {
 
     // STATES FROM REDUX
 
-    const { loading, error, product } = useSelector(state => state.productList)
+    const { loading, error, product } = useSelector(state => state.productDetails)
     const { success: successProductReview, error: errorProductReview } = useSelector(state => state.productReviewCreate)
     const { userInfo } = useSelector(state => state.userLogin)
 

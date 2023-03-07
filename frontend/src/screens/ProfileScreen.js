@@ -1,6 +1,8 @@
 import { useDispatch, useSelector } from "react-redux";
-import { USER_DETAIL_REQUEST, USER_DETAIL_SUCCESS, USER_DETAIL_FAIL, USER_UPDATE_PROFILE_REQUEST, USER_UPDATE_PROFILE_SUCCESS, USER_UPDATE_PROFILE_FAIL } from "../redux/userSlice";
+import { USER_UPDATE_PROFILE_REQUEST, USER_UPDATE_PROFILE_SUCCESS, USER_UPDATE_PROFILE_FAIL } from "../redux/userSlice";
+import { USER_DETAIL_REQUEST, USER_DETAIL_SUCCESS, USER_DETAIL_FAIL } from "../redux/userSlice"
 import { ORDER_LIST_MY_REQUEST, ORDER_LIST_MY_SUCCESS, ORDER_LIST_MY_FAIL } from "../redux/orderListMySlice";
+
 import axios from "axios"
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom"
@@ -20,7 +22,7 @@ const ProfileScreen = () => {
     const dispatch = useDispatch()
     const navigate = useNavigate()
     // @USER DETAILS FROM STORE
-    const userDetails = useSelector(state => state.userLogin)
+    const userDetails = useSelector(state => state.userDetails)
     const { loading, error, user } = userDetails
 
     const userLogin = useSelector(state => state.userLogin)
@@ -92,7 +94,6 @@ const ProfileScreen = () => {
     }
 
     useEffect(() => {
-
         if (!userInfo) {
             navigate("/login")
         } else {
@@ -166,7 +167,7 @@ const ProfileScreen = () => {
                             <tr key={order._id}>
                                 <td>{order._id}</td>
                                 {/* created at not working */}
-                                <td>{order.createdAt.substring(0, 10)}</td>
+                                <td>{order.createdAt}</td>
                                 <td>{order.isPaid ? order.paidAt.substring(0, 10) : (<i className="fas fa-times" style={{ color: "red" }}></i>)}</td>
                                 <td>{order.totalPrice}</td>
                                 <td>{order.isPaid ? order.paidAt.substring(0, 10) : (<i className="fas fa-times" style={{ color: "red" }}></i>)}</td>
